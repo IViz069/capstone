@@ -22,6 +22,7 @@
 
     if ($result->success) {
         print_r("Su compra se realizo con exito, codigo de transaccion " . $result->transaction->id);
+        /*
         $ran =rand();
         $pdf = new FPDF();
         $pdf->AddPage();
@@ -79,7 +80,7 @@
         }else{
             echo "Sorry, failed while sending mail!";
         }
-
+        */
 
         ?> <a href="index.php"><button>Regresar al inicio</button></a>
         <button type="submit" onclick="window.open('http://localhost/caps/boletas/<?php echo $ran; ?>.pdf')">Descargar Boleta</button>
