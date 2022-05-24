@@ -1,0 +1,61 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "3ee37e585889ba81233161dfa53a8fc7",
+    "packages": [
+        {
+            "name": "docxmerge/docxmerge-php",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Docxmerge/docxmerge-php.git",
+                "reference": "e41aede4cd2dfbb8c214ef29e258e7c593038480"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Docxmerge/docxmerge-php/zipball/e41aede4cd2dfbb8c214ef29e258e7c593038480",
+                "reference": "e41aede4cd2dfbb8c214ef29e258e7c593038480",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Docxmerge\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Viejo",
+                    "email": "davidviejopomata@gmail.com"
+                }
+            ],
+            "description": "A skeleton for writing php packages",
+            "support": {
+                "issues": "https://github.com/Docxmerge/docxmerge-php/issues",
+                "source": "https://github.com/Docxmerge/docxmerge-php/tree/v1.3.0"
+            },
+            "time": "2019-10-01T12:49:50+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}

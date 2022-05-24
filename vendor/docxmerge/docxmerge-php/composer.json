@@ -1,0 +1,26 @@
+{
+  "name": "docxmerge/docxmerge-php",
+  "description": "A skeleton for writing php packages",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "David Viejo",
+      "email": "davidviejopomata@gmail.com"
+    }
+  ],
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Docxmerge\\": "src"
+    }
+  },
+  "require": {
+    "php" : "^7.0",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    
+  }
+}

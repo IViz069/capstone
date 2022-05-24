@@ -1,0 +1,5 @@
+{
+    "require": {
+        "docxmerge/docxmerge-php": "^1.3"
+    }
+}

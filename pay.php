@@ -5,6 +5,14 @@
     require "fpdf.php";
     require 'database.php';
 
+    require_once('vendor/autoload.php');
+
+    date_default_timezone_set("America/Lima");
+
+    use Docxmerge\Docxmerge;
+
+    $docxmerge = new Docxmerge("UkRQnkKy5VWmkChGfdqPCkPWKpajlu", "default-jk_vile", "https://api.docxmerge.com");
+
 
     $gateway = new Braintree\Gateway([
         'environment' => 'sandbox',
@@ -22,65 +30,44 @@
 
     if ($result->success) {
         print_r("Su compra se realizo con exito, codigo de transaccion " . $result->transaction->id);
-        /*
-        $ran =rand();
-        $pdf = new FPDF();
-        $pdf->AddPage();
-        $adx = "C:\ ";
-        $dirrr = trim($adx)."xampp\htdocs\caps\boletas\ ";
-        $finald = trim($dirrr). $ran.'.pdf';
 
-        $header= array('Codigo', 'Producto','Cantidad','Precio','Subtotal');
-        $datos = array('adawdaw','awdawd','awdawdaw','dawdawdaw','dawdawd','dwadwa','dwdwawd');
+        $data = array();
+        $data["dni"] = "dni";
+        $data["igv"] = calcularPrecioTotal()*0.18;
+        $data_data = array();
+        $data_data_0 = array();
+        $data_data_0["desc"] = "desc";
+        $data_data_0["puni"] = "puni";
+        $data_data_0["quant"] = "quant";
+        $data_data_0["total"] = "total";
+        array_push($data_data, $data_data_0);
+        $data_data_1 = array();
+        $data_data_1["desc"] = "desc";
+        $data_data_1["puni"] = "puni";
+        $data_data_1["quant"] = "quant";
+        $data_data_1["total"] = "total";
+        array_push($data_data, $data_data_1);
+        $data["data"] = $data_data;
+        $data["date"] = date("d/m/Y");
+        $data["name"] = "name";
+        $data["time"] = date("G:i");
+        $data["email"] = "email";
+        $data["phone"] = "phone";
+        $data["number"] = "number";
+        $data["ttotal"] = calcularPrecioTotal() + calcularPrecioTotal()*0.18;
+        $data["address"] = "address";
+        $data["cardnum"] = "**** **** **** ". $result->transaction->creditCardDetails->last4;
+        $data["subtotal"] = calcularPrecioTotal();
 
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(0, 10, 'Boleta de compra numero '. $ran, 0, 1, 'C');
-        $pdf->Ln();
+    $fp = fopen("./bole4.pdf", "w");
 
-        $customer = $conn->prepare('SELECT * FROM caps_login WHERE id=' . $_SESSION['user_id']);
-        $customer->execute();
-        $customerResults = $customer->fetch(PDO::FETCH_ASSOC);
-
-        $pdf->Cell(0, 10, 'Cliente: '. $customerResults['email'], 0, 1, 'L');
-        $pdf->Ln();
-        date_default_timezone_set("America/Lima");
-        $pdf->Cell(0, 10, 'Fecha de compra: '. date("d/m/Y H:i"), 0, 1, 'L');
-        $pdf->Ln();
-        for($i=0;$i<count($header);$i++){
-            $pdf->Cell(38,7,$header[$i],1,0);
-        }
-        $pdf->Ln();
-        for ($i = 0; $i < count($_SESSION['cart']) / 2; $i++) {
-            $products = $conn->prepare('SELECT * FROM caps_products WHERE id=' . $_SESSION['cart'][$i * 2]);
-            $products->execute();
-            $productsResults = $products->fetch(PDO::FETCH_ASSOC);
-            $pdf->Cell(38,7,$productsResults['id'],1,0);
-            $pdf->Cell(38,7,$productsResults['nombre'],1,0);
-            $pdf->Cell(38,7,$_SESSION['cart'][($i * 2)+1],1,0);
-            $pdf->Cell(38,7,$productsResults['precio'],1,0);
-            $pdf->Cell(38,7,"S/ ".$_SESSION['cart'][($i * 2)+1]*$productsResults['precio'],1,0);
-            $pdf->Ln();
-        }
-
-
-        $pdf->Ln();
-        $pdf->Cell(0, 10, 'Total: S/ '. calcularPrecioTotal(), 0, 1, 'R');
-        $pdf->Output('F', $finald);
-
-        $products = $conn->prepare('SELECT * FROM caps_login WHERE id=' . $_SESSION['user_id']);
-        $products->execute();
-        $productsResults = $products->fetch(PDO::FETCH_ASSOC);
-
-        $receiver = $productsResults['email'];
-        $subject = "Comprobante de pago de compra " . $ran;
-        $body = "Se le adjunta su comprobante de pago de la compra " . $ran . PHP_EOL . "http://localhost/caps/boletas/" . $ran . ".pdf";
-        $sender = "From:kevmks902@gmail.com";
-        if(mail($receiver, $subject, $body, $sender)){
-            echo "\n Se envia comprobante de pago a su correo $receiver";
-        }else{
-            echo "Sorry, failed while sending mail!";
-        }
-        */
+    $docxmerge->renderTemplate(
+        $fp,
+        "bole4",
+        $data,
+        "PDF",
+        "latest"
+    );
 
         ?> <a href="index.php"><button>Regresar al inicio</button></a>
         <button type="submit" onclick="window.open('http://localhost/caps/boletas/<?php echo $ran; ?>.pdf')">Descargar Boleta</button>
