@@ -8,8 +8,10 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
 
   $email = $_POST['email'];
   $password = $_POST['password'];
+  $name = $_POST['name'];
+  $surname = $_POST['surname'];
 
-  $sql = "INSERT INTO `caps_users` (`id`, `email`, `password`) VALUES (NULL, '$email', '$password')";
+  $sql = "INSERT INTO `caps_users` (`id`, `email`, `name`, `surname`, `password`) VALUES (NULL, '$email', '$name', '$surname', '$password')";
   $stmt = $conn->prepare($sql);
   $stmt->bindParam(':email', $_POST['email']);
   $stmt->bindParam(':password', $_POST['password']);
@@ -58,6 +60,13 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
         <p id="message"></p>
           <form action="signup.php" method="POST">
+
+            <div class="form-outline mb-3">
+              <input required="required" name="name" type="text" id="form3Example3" class="form-control form-control-lg" placeholder="Ingrese su nombre" />
+            </div>
+            <div class="form-outline mb-3">
+              <input required="required" name="surname" type="text" id="form3Example3" class="form-control form-control-lg" placeholder="Ingrese su apellido" />
+            </div>
 
             <!-- Email input -->
             <div class="form-outline mb-3">

@@ -1,7 +1,8 @@
 <?php
-session_start();
+
 
 require 'database.php';
+require "funcs.php";
 
 if (!isset($_SESSION['user_id'])) {
     header('location:login.php');
@@ -49,7 +50,7 @@ $cartResults = $cart->fetch(PDO::FETCH_ASSOC);
             $cartResults2 = $cart2->fetchAll(PDO::FETCH_ASSOC);
 
             for ($i = 0; $i < count($cartResults2); $i++) {
-                $total = $total + $cartResults2[$i]['precio'] * $cartResults2[$i]['cantidad'];
+                
             ?>
 
                 <tr>
@@ -69,7 +70,8 @@ $cartResults = $cart->fetch(PDO::FETCH_ASSOC);
             //echo '<pre>' . print_r($_SESSION, TRUE) . '</pre>';
             ?>
         </table>
-        <h1>Precio total: <?php echo $total ?></h1>
+        <h1>IGV: <?php echo calcularPrecioTotal()*0.18 ?></h1>
+        <h1>Precio total: <?php echo calcularPrecioTotal() + calcularPrecioTotal()*0.18 ?></h1>
         <a href="comprar.php"><button>Pagar</button></a>
 
     <?php

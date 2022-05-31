@@ -20,4 +20,14 @@ function calcularPrecioTotal()
     
     return $total;
 }
+
+function calcularPrecioTotalConIgv()
+{
+    return calcularPrecioTotal() + calcularPrecioTotal()*0.18;
+}
+
+function calcularIgv()
+{
+    return calcularPrecioTotal()*0.18;
+}
 ?>

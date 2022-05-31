@@ -26,6 +26,9 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
 
   if (!($results == null) && $_POST['password'] == $results['password']) {
     $_SESSION['user_id'] = $results['id'];
+    $_SESSION['email'] = $results['email'];
+    $_SESSION['name'] = $results['name'];
+    $_SESSION['surname'] = $results['surname'];
     header('location:index.php');
   } else {
     $message = 'Crendenciales incorrectas';
@@ -84,7 +87,7 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
       <!-- Copyright -->
       <div class="text-white mb-3 mb-md-0">
         Copyright © 2022. Rodamientos salas SRL derechos reservados.
-        <a style="color: black;" href="#">Login administrativo</a>
+        <a style="color: black;" href="loginadmin.php">Login administrativo</a>
       </div>
       <!-- Copyright -->
       <div>

@@ -64,6 +64,9 @@ $clientToken = $gateway->clientToken()->generate();
             <div class="container">
                 <h3>Datos de envio</h3>
                 <div class="mb-3">
+                    <input name="dni" type="number" class="form-control" id="exampleFormControlInput1" placeholder="Numero de documento">
+                </div>
+                <div class="mb-3">
                     <input name="address" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Direccion">
                 </div>
                 <div class="mb-3">
