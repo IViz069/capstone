@@ -32,22 +32,18 @@
         'options' => [ 'submitForSettlement' => True ]
     ]);
 
+    $sqlDateFormat = "Y-m-d G:i:s";
+
     if ($result->success) {
         print_r("Su compra se realizo con exito, codigo de transaccion " . $result->transaction->id);
 
-        $cart2 = $conn->prepare('SELECT a.cantidad, b.descr, b.precio FROM caps_cart a INNER JOIN caps_products b ON a.id_item = b.id WHERE a.id_cliente = ' . $_SESSION['user_id']);
+        $cart2 = $conn->prepare('SELECT a.cantidad, b.descr, b.precio, a.id_item FROM caps_cart a INNER JOIN caps_products b ON a.id_item = b.id WHERE a.id_cliente = ' . $_SESSION['user_id']);
         $cart2->execute();
         $cartResults2 = $cart2->fetchAll(PDO::FETCH_ASSOC);
 
         $nume = $conn->prepare('SELECT `AUTO_INCREMENT` AS NUME FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = "capss" AND   TABLE_NAME   = "caps_venta_cabecera";');
         $nume->execute();
         $numeRes = $nume->fetchAll(PDO::FETCH_ASSOC);
-
-        /*SELECT `AUTO_INCREMENT`
-FROM  INFORMATION_SCHEMA.TABLES
-WHERE TABLE_SCHEMA = 'capss'
-AND   TABLE_NAME   = 'caps_venta_cabecera';*/
-
 
         $data = array();
         $data["dni"] = $_POST['dni'];
@@ -75,7 +71,7 @@ AND   TABLE_NAME   = 'caps_venta_cabecera';*/
         $data["ttotal"] = number_format(calcularPrecioTotalConIgv(),2);
         $data["address"] = $_POST['address'];
         $data["cardnum"] = "**** **** **** ". $result->transaction->creditCardDetails->last4;
-        $data["tottext"] = $formatter->toMoney(number_format(calcularPrecioTotalConIgv(),2), 2, 'SOLES', 'CENTIMOS');
+        $data["tottext"] = $formatter->toMoney(number_format(calcularPrecioTotalConIgv(),2, '.', ''), 2, 'SOLES', 'CENTIMOS');
         $data["subtotal"] = number_format(calcularPrecioTotal(),2);
 
     $fp = fopen("./boletas/" . $numeRes[0]['NUME'] . ".pdf", "w");
@@ -87,6 +83,30 @@ AND   TABLE_NAME   = 'caps_venta_cabecera';*/
         "PDF",
         "latest"
     );
+    $userId = $_SESSION['user_id'];
+    $date = date($sqlDateFormat);
+    $address = $_POST['address'];
+    $boleNum = $numeRes[0]['NUME'];
+
+    $saveSell = $conn->prepare("INSERT INTO `caps_venta_cabecera` (`venta_id`, `venta_cliente`, `venta_fecha`, `venta_direccion`) VALUES (NULL, $userId, '$date', '$address');");
+    $saveSell->execute();
+
+    for($i=0;$i<count($cartResults2);$i++){
+        $tempItemId = $cartResults2[$i]['id_item'];
+        $tempItemCant = $cartResults2[$i]['cantidad'];
+
+        $saveSellDetail = $conn->prepare("INSERT INTO `caps_venta_cuerpo` (`venta_id`, `venta_numItem`, `venta_producto`, `venta_cantidad`) VALUES ($boleNum, $i+1, $tempItemId, $tempItemCant);");
+        $saveSellDetail->execute();
+
+        $updateProductCant = $conn->prepare("UPDATE caps_products SET cantidad = cantidad - $tempItemCant WHERE id = $tempItemId");
+        $updateProductCant->execute();
+
+        $updateProductStats = $conn->prepare("UPDATE caps_products SET stats = stats + $tempItemCant WHERE id = $tempItemId");
+        $updateProductStats->execute();
+    }
+
+    $emptCart = $conn->prepare("DELETE FROM caps_cart WHERE id_cliente = $userId");
+    $emptCart->execute();
 
         ?> <a href="index.php"><button>Regresar al inicio</button></a>
         <button type="submit" onclick="window.open('http://localhost/caps/boletas/<?php echo $numeRes[0]['NUME']; ?>.pdf')">Descargar Boleta</button>

@@ -3,24 +3,15 @@
 
     require 'database.php';
 
-    function hasItem(array $items, $value){
-        for($i=0;$i<count($items);$i++){
-            if($i%2==0){
-                if($items[$i]== (int) $value){
-                    return True;
-                }
-            }
-        }
-        return False;
-    }
-
-    $products = $conn->prepare('SELECT * FROM caps_products WHERE id='.htmlspecialchars($_GET["id"]));
+    $products = $conn->prepare('SELECT a.id, a.nombre, a.precio, a.descr, a.imagen, b.name FROM caps_products a INNER JOIN caps_brands b ON a.id = b.id WHERE a.id='.htmlspecialchars($_GET["id"]) );
     $products->execute();
     $productsResults = $products->fetch(PDO::FETCH_ASSOC);
 
-    $checkItem = $conn->prepare('SELECT COUNT(*) AS CANT FROM caps_cart WHERE id_cliente=' . $_SESSION['user_id']. ' AND id_item = ' . htmlspecialchars($_GET["id"]));
-    $checkItem->execute();
-    $checkItemResults = $checkItem->fetch(PDO::FETCH_ASSOC);
+    if(isset($_SESSION['user_id'])){
+        $checkItem = $conn->prepare('SELECT COUNT(*) AS CANT FROM caps_cart WHERE id_cliente=' . $_SESSION['user_id']. ' AND id_item = ' . htmlspecialchars($_GET["id"]));
+        $checkItem->execute();
+        $checkItemResults = $checkItem->fetch(PDO::FETCH_ASSOC);
+    }
 
     if($productsResults==NULL){
         header('location:products.php');
@@ -54,9 +45,9 @@
 
             <!-- Product Description -->
             <div class="product-description">
-                <span>#Marca#</span>
+                <span><?php echo  $productsResults['name']?></span>
                 <h1><?php echo  $productsResults['nombre']?></h1>
-                <p>The preferred choice of a vast range of acclaimed DJs. Punchy, bass-focused sound and high isolation. Sturdy headband and on-ear cushions suitable for live performance</p>
+                <p><?php echo  $productsResults['descr']?></p>
             </div>
 
             <!-- Product Pricing -->
@@ -66,7 +57,7 @@
                     <input type="number" name="cant" value="1" min="1">
                     <?php
 
-                        if($checkItemResults['CANT']>0){
+                        if(isset($_SESSION['user_id']) && $checkItemResults['CANT']>0 ){
                             ?>
                             <input id="butt" type="submit" value="Producto ya en el carrito" disabled>
                             <?php
