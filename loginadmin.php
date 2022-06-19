@@ -1,11 +1,12 @@
 <?php
 
 session_start();
+require 'database.php';
 
 if (isset($_SESSION['admin_id'])) {
-  header('location:loginadmin.php');
+  header('location:admin.php');
 }
-require 'database.php';
+
 
 if (!empty($_POST['email']) && !empty($_POST['password'])) {
 

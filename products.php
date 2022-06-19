@@ -3,10 +3,37 @@ session_start();
 
 require 'database.php';
 
-$products = $conn->prepare('SELECT * FROM caps_products WHERE disabled = 0');
-$products->execute();
-$productsResults = $products->fetchAll();
+$categories = $conn->prepare('SELECT * FROM caps_categories');
+$categories->execute();
+$categoriesResults = $categories->fetchAll(PDO::FETCH_ASSOC);
 
+if (isset($_GET['n']) && isset($_GET['c'])) {
+    $name = $_GET['n'];
+    $cat = $_GET['c'];
+    $query = "SELECT a.*, c.descr FROM caps_products a INNER JOIN caps_productxcategorie b ON a.id=b.id_product INNER JOIN caps_categories c ON b.id_categorie = c.id WHERE disabled = 0 AND c.id = $cat AND nombre LIKE '%$name%';";
+    $products = $conn->prepare($query);
+    $products->execute();
+    $productsResults = $products->fetchAll();
+}
+else if (isset($_GET['n'])){
+    $name = $_GET['n'];
+    $query = "SELECT * FROM caps_products WHERE disabled = 0 AND nombre LIKE '%$name%';";
+    $products = $conn->prepare($query);
+    $products->execute();
+    $productsResults = $products->fetchAll();
+}
+else if (isset($_GET['c']) && $_GET['n']==""){
+    $cat = $_GET['c'];
+    $query = "SELECT a.*  FROM caps_products a INNER JOIN caps_productxcategorie b ON a.id=b.id_product WHERE disabled = 0 AND b.id_categorie=$cat AND nombre LIKE '%%';";
+    $products = $conn->prepare($query);
+    $products->execute();
+    $productsResults = $products->fetchAll();
+}
+else{
+    $products = $conn->prepare('SELECT * FROM caps_products WHERE disabled = 0');
+    $products->execute();
+    $productsResults = $products->fetchAll();
+}
 
 ?>
 <!DOCTYPE html>
@@ -40,12 +67,13 @@ $productsResults = $products->fetchAll();
             </div>
             <div class="col-auto">
                 <div class="form-group">
-                    <select class="form-select" id="exampleSelect1">
-                        <option>Goma</option>
-                        <option></option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                    <select class="form-select" name="c">
+                    <option value="" selected disabled hidden>Categoria</option>
+                        <?php
+                            for ($i=0; $i < count($categoriesResults); $i++) { 
+                                echo '<option value = '.$categoriesResults[$i]['id'].'>' . $categoriesResults[$i]['descr'] . '</option>';
+                            }
+                        ?>
                     </select>
                 </div>
             </div>
@@ -60,8 +88,13 @@ $productsResults = $products->fetchAll();
     </div>
     <br>
     <div class="container-md" align="center">
-
+        
         <?php
+        if($productsResults == null){
+            echo '<h1>No se encontraron productos</h1>';
+            return;
+        }
+        
         for ($i = 0; $i < count($productsResults); $i++) {
         ?>
             <div class="card mb-3" style="max-width: 540px;">

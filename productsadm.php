@@ -12,7 +12,7 @@ if (isset($_SESSION['admin_id'])) {
     $message="";
     if (count($results) > 0) {
         $user = $results;
-        $query = "SELECT id, nombre, cantidad,
+        $query = "SELECT id, nombre, cantidad, precio, imagen, stats,
         CASE
              WHEN disabled=0 THEN 'No'
              ELSE 'Sí'
@@ -21,7 +21,7 @@ if (isset($_SESSION['admin_id'])) {
         if (isset($_GET['name'])) {
             $name = $_GET['name'];
             $message = 'value='. $_GET['name'];
-            $query = "SELECT id, nombre, cantidad, stats,
+            $query = "SELECT id, nombre, cantidad, precio, imagen, stats,
             CASE
                  WHEN disabled=0 THEN 'No'
                  ELSE 'Sí'
@@ -95,24 +95,35 @@ if (isset($_SESSION['admin_id'])) {
     <br>
 
     <div class="container-md">
-        <form class="row g-3" method="GET">
+        <div class="row g-3">
             <div class="col-auto">
-                <p class="form-control-plaintext" disabled>Buscar producto:</p>
+                <form class="row g-3" method="GET">
+                    <div class="col-auto">
+                        <p class="form-control-plaintext" disabled>Buscar producto:</p>
+                    </div>
+                    <div class="col-auto">
+                        <label for="inputPassword2" class="visually-hidden">Password</label>
+                        <input <?php echo $message?> name="name" required type="text" class="form-control" id="inputPassword2" placeholder="Nombre del producto">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">Buscar</button>
+                    </div>
+                </form>
             </div>
             <div class="col-auto">
-                <label for="inputPassword2" class="visually-hidden">Password</label>
-                <input <?php echo $message?> name="name" required type="text" class="form-control" id="inputPassword2" placeholder="Nombre del producto">
+                <a href="newproduct.php"><button type="submit" class="btn btn-success mb-3">Agregar producto</button></a>
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary mb-3">Buscar</button>
-            </div>
-        </form>
-
+            
+        </div>
+        
+        
         <table class="table table-hover table-striped table-info">
             <thead>
                 <tr>
                     <th scope="col">Id</th>
+                    <th scope="col">Producto</th>
                     <th scope="col">Nombre</th>
+                    <th scope="col">Precio</th>
                     <th scope="col">Cantidad</th>
                     <th scope="col">Ventas</th>
                     <th scope="col">Deshabilitado</th>
@@ -125,9 +136,12 @@ if (isset($_SESSION['admin_id'])) {
                 ?>
             <tr>
                 <td><?php echo $productsResults[$i]['id'] ?></td>
+                <td><img src="<?php echo $productsResults[$i]['imagen'] ?>" alt="" width="100"></td>
                 <td><?php echo $productsResults[$i]['nombre'] ?></td>
-                <td><?php echo $productsResults[$i]['stats'] ?></td>
+                <td><?php echo $productsResults[$i]['precio'] ?></td>
                 <td><?php echo $productsResults[$i]['cantidad'] ?></td>
+                <td><?php echo $productsResults[$i]['stats'] ?></td>
+                
                 <td><?php echo $productsResults[$i]['Deshabilitado'] ?></td>
                 <td>
                     <a href="editproduct.php?id=<?php echo $productsResults[$i]['id'] ?>"><button class="btn btn-warning">Editar</button></a>

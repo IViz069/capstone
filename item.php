@@ -3,7 +3,7 @@
 
     require 'database.php';
 
-    $products = $conn->prepare('SELECT a.id, a.nombre, a.precio, a.descr, a.imagen, b.name FROM caps_products a INNER JOIN caps_brands b ON a.id = b.id WHERE a.id='.htmlspecialchars($_GET["id"]) );
+    $products = $conn->prepare('SELECT a.id, a.nombre, a.precio, a.imagen, a.descr, b.name, d.descr AS CCATE FROM caps_products a INNER JOIN caps_brands b  ON a.id_brand = b.id INNER JOIN caps_productxcategorie c ON a.id = c.id_product INNER JOIN caps_categories d ON c.id_categorie = d.id WHERE a.id = '.htmlspecialchars($_GET["id"]) );
     $products->execute();
     $productsResults = $products->fetch(PDO::FETCH_ASSOC);
 
@@ -46,6 +46,7 @@
             <!-- Product Description -->
             <div class="product-description">
                 <span><?php echo  $productsResults['name']?></span>
+                <p><?php echo  $productsResults['CCATE']?></p>
                 <h1><?php echo  $productsResults['nombre']?></h1>
                 <p><?php echo  $productsResults['descr']?></p>
             </div>
